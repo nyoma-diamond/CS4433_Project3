@@ -12,6 +12,11 @@ vals = int(vals)
 people = open("output/PEOPLE.csv", "w")
 i_small = open("output/INFECTED-small.csv", "w")
 i_large = open("output/INFECTED-large.csv", "w")
+
+people.write("ID,X,Y\n")
+i_small.write("ID,X,Y\n")
+i_large.write("ID,X,Y\n")
+
 for i in range(vals):
     write_str = f"{i}," + ",".join([str(random.randint(1, 10000)) for j in range(2)]) + "\n"
     people.write(write_str)

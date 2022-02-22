@@ -10,6 +10,6 @@ class Tests extends AnyFunSuite  with Logging with BeforeAndAfterAll with Serial
   }
 
   test("run") {
-    P1Q1.run(sc)
+    println(P1Q1.run(sc).mkString("Array(", ", ", ")"))
   }
 }

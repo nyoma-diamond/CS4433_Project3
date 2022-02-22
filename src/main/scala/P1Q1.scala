@@ -35,36 +35,47 @@ object P1Q1 extends Serializable {
     else false
   }
 
-  def run(sc: SparkContext): Unit = {
+  def run(sc: SparkContext): Array[Int] = {
     val spark = SparkSession.builder.getOrCreate()
 
     import spark.implicits._
 
-    val data = spark.read
-//      .format("csv")
-//      .option("sep",",")
-      .textFile("data/output/INFECTED-small.csv")
+    val columns = Seq("ID","X","Y")
+
+    val infected = spark.read
+      .option("delimiter",",")
+      .option("header","true")
+      .option("inferschema","true")
+      .csv("data/output/INFECTED-small.csv")
       .cache()
 
-    val result = data.flatMap(row => {
-      val values = row.split(",")
+    val people = spark.read
+      .option("delimiter",",")
+      .option("header","true")
+      .option("inferschema","true")
+      .csv("data/output/PEOPLE.csv")
 
-      val x = values(1).toInt
-      val y = values(2).toInt
+    val result = infected.flatMap(row => {
+      val x = row.getAs[Int](1)
+      val y = row.getAs[Int](2)
 
-      var seq = Seq[String]()
+      var seq = Seq[(Int, Int)]()
 
       for (i <- x-6 to x+6) {
         for (j <- y-6 to y+6) {
           if (isInside(x, y, 6, i, j)) {
-            seq = seq :+ i.toString + "," + j.toString
+            seq = seq :+ (i, j)
           }
         }
       }
 
       seq
-    })
+    }).toDF("X","Y")
+      .join(people, Seq("X","Y"))
+      .select("ID")
+      .collect()
+      .map(row => row.getInt(0))
 
-    result.foreach(x => println(x))
+    result
   }
 }
