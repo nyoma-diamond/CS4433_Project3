@@ -12,6 +12,10 @@ class Tests extends AnyFunSuite  with Logging with BeforeAndAfterAll with Serial
   test("run") {
 //    P1Q1.run(sc)
 //    P1Q2.run(sc)
-    P2.T2(sc)
+    P2.loadTables()
+    P2.T1()
+    P2.T2()
+    P2.T3()
+    P2.T4()
   }
 }
