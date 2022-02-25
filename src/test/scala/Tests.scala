@@ -10,7 +10,8 @@ class Tests extends AnyFunSuite  with Logging with BeforeAndAfterAll with Serial
   }
 
   test("run") {
-    P1Q1.run(sc)
-    P1Q2.run(sc)
+//    P1Q1.run(sc)
+//    P1Q2.run(sc)
+    P2.T2(sc)
   }
 }

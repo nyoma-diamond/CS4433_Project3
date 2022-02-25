@@ -15,8 +15,6 @@ object P1Q2 extends Serializable {
 
     import spark.implicits._
 
-    val columns = Seq("ID","X","Y")
-
     val infected = spark.read
       .option("delimiter",",")
       .option("header","true")
