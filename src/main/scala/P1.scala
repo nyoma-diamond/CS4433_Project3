@@ -1,9 +1,7 @@
+import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 
 object P1 extends Serializable {
-  val spark: SparkSession = SparkSession.builder.getOrCreate()
-  import spark.implicits._
-
   var path: String = ""
 
   // https://www.geeksforgeeks.org/find-if-a-point-lies-inside-or-on-circle/
@@ -15,6 +13,9 @@ object P1 extends Serializable {
   }
 
   def Q1(): Unit = {
+    val spark: SparkSession = SparkSession.builder.getOrCreate()
+    import spark.implicits._
+
     val infected = spark.read
       .option("delimiter",",")
       .option("header","true")
@@ -46,12 +47,13 @@ object P1 extends Serializable {
     }).toDF("X","Y")
       .join(people, Seq("X","Y"))
       .select("ID")
-      .show(1000)
-//      .collect()
-//      .map(row => row.getInt(0))
+      .show()
   }
 
   def Q2(): Unit = {
+    val spark: SparkSession = SparkSession.builder.getOrCreate()
+    import spark.implicits._
+
     val infected = spark.read
       .option("delimiter",",")
       .option("header","true")
@@ -86,12 +88,27 @@ object P1 extends Serializable {
       .count()
       .map(row => (row.getAs[Int](0), row.getAs[Long](1)-1))
       .toDF("infect_i","count-close-contacts-of-infect-i")
-      .show(1000)
+      .show()
+  }
+
+  def init_sc(): SparkSession = {
+    val conf = new SparkConf().setAppName("cs4433")
+    conf.set("spark.sql.parquet.compression.codec", "uncompressed")
+    conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+    val spark = SparkSession
+      .builder()
+      .config(conf)
+      .getOrCreate()
+    spark
   }
 
   def main(args: Array[String]): Unit = {
+    val spark = init_sc()
+    spark.conf.set("spark.sql.autoBroadcastJoinThreshold",-1)
+    val sc = spark.sparkContext
     path = args(0)
     Q1()
     Q2()
+    sc.stop()
   }
 }

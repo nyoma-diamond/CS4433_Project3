@@ -1,3 +1,4 @@
+import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types.{FloatType, IntegerType, StringType, StructField, StructType}
 
@@ -66,13 +67,26 @@ object P2 extends Serializable {
     ).show()
   }
 
+  def init_sc(): SparkSession = {
+    val conf = new SparkConf().setAppName("cs4433")
+    conf.set("spark.sql.parquet.compression.codec", "uncompressed")
+    conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+    val spark = SparkSession
+      .builder()
+      .config(conf)
+      .getOrCreate()
+    spark
+  }
 
   def main(args: Array[String]): Unit = {
+    val spark = init_sc()
+    val sc = spark.sparkContext
     path = args(0)
     loadTables()
     T1()
     T2()
     T3()
     T4()
+    sc.stop()
   }
 }
