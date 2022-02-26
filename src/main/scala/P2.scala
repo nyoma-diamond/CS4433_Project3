@@ -1,8 +1,9 @@
-import org.apache.spark.SparkContext
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types.{FloatType, IntegerType, StringType, StructField, StructType}
 
 object P2 extends Serializable {
+  var path: String = ""
+
   val pur_schema: StructType = StructType(Array(
     StructField("TransID",IntegerType),
     StructField("CustID",StringType),
@@ -26,14 +27,14 @@ object P2 extends Serializable {
       .option("delimiter",",")
       .option("header","false")
       .schema(pur_schema)
-      .csv("data/output/PURCHASES.csv")
+      .csv(path+"/PURCHASES.csv")
       .createOrReplaceTempView("purchases")
 
     spark.read
       .option("delimiter",",")
       .option("header","false")
       .schema(cus_schema)
-      .csv("data/output/CUSTOMERS.csv")
+      .csv(path+"/CUSTOMERS.csv")
       .createOrReplaceTempView("customers")
   }
 
@@ -63,5 +64,15 @@ object P2 extends Serializable {
         "FROM T3 AS c1, T3 AS c2 " +
         "WHERE c1.ID <> c2.ID AND c1.Age < c2.Age AND c1.TotalSpent > c2.TotalSpent AND c1.TotalItems < c2.TotalItems"
     ).show()
+  }
+
+
+  def main(args: Array[String]): Unit = {
+    path = args(0)
+    loadTables()
+    T1()
+    T2()
+    T3()
+    T4()
   }
 }
