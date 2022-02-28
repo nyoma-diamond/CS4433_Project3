@@ -45,6 +45,7 @@ object P1 extends Serializable {
 
       seq
     }).toDF("X","Y")
+      .distinct()
       .join(people, Seq("X","Y"))
       .select("ID")
       .show()
@@ -86,7 +87,7 @@ object P1 extends Serializable {
       .join(people, Seq("X","Y"))
       .groupBy("ID_inf")
       .count()
-      .map(row => (row.getAs[Int](0), row.getAs[Long](1)-1))
+      .map(row => (row.getAs[Int](0), row.getAs[Long](1)-1)) // minus 1 because the join will always include a person to themself
       .toDF("infect_i","count-close-contacts-of-infect-i")
       .show()
   }
