@@ -61,7 +61,10 @@ object P2 extends Serializable {
 
   def T4(): Unit = {
     spark.sql(
-      "SELECT  c1.ID AS c1ID, c2.ID AS c2ID, c1.Age AS Age1, c2.Age AS Age2, c1.TotalItems AS TotalItemCount1, c2.TotalItems AS TotalItemCount2, c1.TotalSpent AS TotalAmount1, c2.TotalSpent AS TotalAmount2 " +
+      "SELECT  c1.ID AS c1ID, c2.ID AS c2ID, " +
+          "c1.Age AS Age1, c2.Age AS Age2, " +
+          "c1.TotalItems AS TotalItemCount1, c2.TotalItems AS TotalItemCount2, " +
+          "c1.TotalSpent AS TotalAmount1, c2.TotalSpent AS TotalAmount2 " +
         "FROM T3 AS c1, T3 AS c2 " +
         "WHERE c1.ID <> c2.ID AND c1.Age < c2.Age AND c1.TotalSpent > c2.TotalSpent AND c1.TotalItems < c2.TotalItems"
     ).show()
