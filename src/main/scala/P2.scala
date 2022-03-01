@@ -45,7 +45,6 @@ object P2 extends Serializable {
 
   def T2(): Unit = {
     spark.sql("SELECT TransNumItems, avg(TransTotal), min(TransTotal), max(TransTotal) FROM T1 GROUP BY TransNumItems").show()
-    // TODO: Median
   }
 
   def T3(): Unit = {
